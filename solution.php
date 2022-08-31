@@ -150,3 +150,15 @@ print_r(Query::get($input, 'id', 2, '>'));
 print_r(Query::get($input, 'name', 'test3', '==='));
 print_r(Query::get($input, 'date', '13.01.2020', '<'));
 print_r(Query::get($input, 'name', 'test3', '>'));
+
+////////////////////////////////////////////
+// task #4
+
+$result = [];
+array_walk($input, function ($value) use (&$result) {
+    if (!isset($result[$value['name']])) {
+        $result[$value['name']] = $value['id'];
+    }
+});
+print_r($result);
+
