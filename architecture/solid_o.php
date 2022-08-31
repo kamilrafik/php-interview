@@ -9,15 +9,19 @@ class SomeObject {
 }
 
 class SomeObjectsHandler {
+    protected $configuration = [
+        'object_1' => 'handle_object_1',
+        'object_2' => 'handle_object_2',
+    ];
+
     public function __construct() { }
 
     public function handleObjects(array $objects): array {
         $handlers = [];
         foreach ($objects as $object) {
-            if ($object->getObjectName() == 'object_1')
-                $handlers[] = 'handle_object_1';
-            if ($object->getObjectName() == 'object_2')
-                $handlers[] = 'handle_object_2';
+            if (isset($this->configuration[$object->getObjectName()])) {
+                $handlers[] = $this->configuration[$object->getObjectName()];
+            }
         }
 
         return $handlers;
