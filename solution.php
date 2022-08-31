@@ -162,3 +162,19 @@ array_walk($input, function ($value) use (&$result) {
 });
 print_r($result);
 
+////////////////////////////////////////////
+// task #5
+
+// not debugged, but in some DBMSs it should work:
+/*
+select g.* from goods g where g.id in
+    (
+        select gt.goods_id from goods_tags gt group by gt.goods_id having count(gt.goods_id) = (select count(t.id) from tags t)
+    )
+*/
+
+////////////////////////////////////////////
+// task #6
+
+// not debugged:
+// select distinct department_id from evaluations where gender=1 and value>5
