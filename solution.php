@@ -9,10 +9,70 @@ $input = [
     ['id' => 3, 'date' => '06.06.2020', 'name' => 'test3'],
 ];
 
+////////////////////////////////////////////
 // task #1
+
 $ids = [];
 print_r(array_filter($input, function ($value) use (&$ids) {
     $result = !in_array($value['id'], $ids);
     $ids[] = $value['id'];
     return $result;
 }));
+
+////////////////////////////////////////////
+// task #2
+
+class Sorter
+{
+    protected static $key;
+
+    public static function sort(&$array, $key)
+    {
+        if (!count($array)) {
+            return;
+        }
+
+        $method = null;
+        if (is_integer($array[0][$key])) {
+            $method = 'sortIntegers';
+        } elseif (preg_match('/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/', $array[0][$key])) {
+            $method = 'sortDates';
+        } else {
+            $method = 'sortStrings';
+        }
+
+        self::$key = $key;
+        usort($array, [Sorter::class, $method]);
+    }
+
+    protected static function sortIntegerValues($a, $b)
+    {
+        if ($a === $b) {
+            return 0;
+        } else {
+            return $a < $b ? -1 : 1;
+        }
+    }
+
+    protected static function sortIntegers($a, $b)
+    {
+        return self::sortIntegerValues($a[self::$key], $b[self::$key]);
+    }
+
+    protected static function sortDates($a, $b)
+    {
+        return self::sortIntegerValues(strtotime($a[self::$key]), strtotime($b[self::$key]));
+    }
+
+    protected static function sortStrings($a, $b)
+    {
+        return strcmp($a[self::$key], $b[self::$key]);
+    }
+}
+
+Sorter::sort($input, 'id');
+print_r($input);
+Sorter::sort($input, 'date');
+print_r($input);
+Sorter::sort($input, 'name');
+print_r($input);
