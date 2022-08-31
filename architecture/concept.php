@@ -1,9 +1,51 @@
 <?php
+
+// stored in configuration file
+$globalConfiguration = [
+    // initialized on application initialization
+    'storage' => 'file',
+    'drivers' => [
+        'file' => [
+            'class' => FileDriver::class,
+            'path' => '/secure/path',
+        ],
+        'database' => [
+            'class' => DbDriver::class,
+            'dsn' => '....',
+        ],
+    ],
+];
+
+interface IStorage
+{
+    public function getValue($key);
+}
+
+class FileDriver implements IStorage
+{
+    public function getValue($key)
+    {
+        // TODO: Implement getValue() method.
+    }
+}
+
+class DbDriver implements IStorage
+{
+    public function getValue($key)
+    {
+        // TODO: Implement getValue() method.
+    }
+}
+
 class Concept {
     private $client;
+    private $storage;
 
-    public function __construct() {
+    private const SECRET_KEY_NAME = 'secret-key-for-concept';
+
+    public function __construct(IStorage $storage) {
         $this->client = new \GuzzleHttp\Client();
+        $this->storage = $storage;
     }
 
     public function getUserData() {
@@ -18,5 +60,10 @@ class Concept {
         });
 
         $promise->wait();
+    }
+
+    private function getSecretKey()
+    {
+        return $this->storage->getValue(self::SECRET_KEY_NAME);
     }
 }
